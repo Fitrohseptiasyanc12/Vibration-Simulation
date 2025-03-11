@@ -6,54 +6,31 @@ from matplotlib.lines import Line2D
 from PIL import Image
 import os
 
-# Path untuk logo dan profile
-script_dir = os.path.dirname(os.path.abspath(__file__))
-assets_dir = os.path.join(script_dir, "assets")  # Folder assets
-logo_path = os.path.join(assets_dir, "logo.jpg")
-profile_path = os.path.join(assets_dir, "profile.jpg")
-
-# Load gambar logo dan profile dengan penanganan error
-try:
-    logo = Image.open(logo_path)
-except FileNotFoundError:
-    logo = None  # Set None jika file tidak ditemukan
-
-try:
-    profile = Image.open(profile_path)
-except FileNotFoundError:
-    profile = None
-
 # Sidebar Navigation
 st.sidebar.header("Pilih Menu")
 page = st.sidebar.radio("Navigation", ["Home", "My Profile", "VibSim"])
 
 if page == "Home":
-    if logo:
-        st.image(logo, width=200)
-    else:
-        st.error("Logo tidak ditemukan di folder assets.")
     st.title("WELCOME TO VIBSIM")
     st.subheader("Mechanical Vibration")
     st.write("Vibration Simulation (VibSim) dirancang untuk membantu anda dalam mensimulasikan sistem pegas-massa-redaman secara interaktif")
     st.write("Silahkan pilih menu di kiri atas untuk memulai.")
 
 elif page == "My Profile":
-    if profile:
-        st.image(profile, width=200)
-    else:
-        st.error("Profile picture tidak ditemukan di folder assets.")
     st.header("My Profile")
     st.write("Nama: Fitroh Septiasya Nour Cahya")
     st.write("Email: fitroh.cahya@student.president.ac.id")
     st.write("Domisili: Cikarang Barat")
 
 elif page == "VibSim":
+    # Fungsi untuk menyelesaikan persamaan diferensial sistem pegas-massa-redaman
     def mass_spring_damper(t, y, m, k, c):
         x, v = y
         dxdt = v
         dvdt = (-k*x - c*v) / m
         return [dxdt, dvdt]
 
+    # Fungsi untuk mensimulasikan sistem dan menampilkan grafik
     def simulate(m, k, c, x0, v0, t_end):
         t_span = (0, t_end)
         t_eval = np.linspace(0, t_end, 1000)
@@ -65,18 +42,17 @@ elif page == "VibSim":
         zeta = c / (2 * np.sqrt(k * m))
         omega_d = omega_n * np.sqrt(1 - zeta**2) if zeta < 1 else 0
         gaya_pegas = k * x0
-
+        
         fig, ax = plt.subplots()
         ax.plot(sol.t, sol.y[0], color='blue')
         ax.plot(sol_undamped.t, sol_undamped.y[0], color='green', linestyle='dashed')
-        
+
         legend_elements = [
             Line2D([0], [0], color="green", lw=2, linestyle="dashed", label="Undamped"),
             Line2D([0], [0], color="blue", lw=2, label="Damped")
         ]
-        ax.legend(handles=legend_elements, loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=2, frameon=True)
 
-        ax.set_xticks(np.arange(1, t_end + 1, 1))
+        ax.legend(handles=legend_elements, loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=2, frameon=True)
         ax.set_xlabel("Waktu (s)")
         ax.set_ylabel("Amplitudo")
         ax.grid()
@@ -95,7 +71,9 @@ elif page == "VibSim":
 
     if st.sidebar.button("Simulate"):
         fig, omega_n, zeta, omega_d, gaya_pegas = simulate(m, k, c, x0, v0, t_end)
+
         st.pyplot(fig)
+
         st.markdown("## Hasil Perhitungan")
         st.latex(r"\text{Natural Frequency } (\omega_n) = " + f"{omega_n:.3f}" + r" \text{ rad/s}")
         st.latex(r"\text{Damping Ratio } (\zeta) = " + f"{zeta:.3f}")
@@ -104,3 +82,13 @@ elif page == "VibSim":
         else:
             st.markdown("**Overdamped system (no oscillation)**")
         st.latex(r"\text{Gaya Pegas } (F) = " + f"{gaya_pegas:.3f}" + r" \text{ N}")
+
+        st.markdown("## Analisis Grafik")
+        if zeta == 0:
+            st.markdown("🔹 **Tanpa Redaman**: Sistem berosilasi selamanya tanpa kehilangan energi.")
+        elif 0 < zeta < 1:
+            st.markdown("🔹 **Under-damped**: Sistem berosilasi dengan amplitudo yang menurun seiring waktu.")
+        elif zeta == 1:
+            st.markdown("🔹 **Critically damped**: Sistem kembali ke posisi awal secepat mungkin tanpa osilasi.")
+        else:
+            st.markdown("🔹 **Over-damped**: Sistem kembali ke posisi awal lebih lambat tanpa osilasi.")
