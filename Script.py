@@ -7,8 +7,8 @@ from PIL import Image
 import os
 
 # Path untuk logo dan profile
-logo_path = os.path.join("assets", "logo.JPG")
-profile_path = os.path.join("assets", "profile.JPG")
+logo_path = os.path.join("assets", "logo.jpg")
+profile_path = os.path.join("assets", "profile.jpg")
 
 # Load gambar logo dan profile jika tersedia
 if os.path.exists(logo_path):
