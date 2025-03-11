@@ -6,24 +6,25 @@ from matplotlib.lines import Line2D
 from PIL import Image
 import os
 
-# Path untuk logo dan profile
+# Path untuk folder assets
 script_dir = os.path.dirname(os.path.abspath(__file__))
 assets_dir = os.path.join(script_dir, "assets")
+
 logo_path = os.path.join(assets_dir, "logo.JPG")
 profile_path = os.path.join(assets_dir, "profile.JPG")
 
-# Load gambar logo dan profile jika ada
+# Cek apakah file ada sebelum dibuka
 if os.path.exists(logo_path):
     logo = Image.open(logo_path)
 else:
     logo = None
-    st.error(f"Tidak menemukan file: {logo_path}")
+    st.error("Gambar logo tidak ditemukan! Pastikan 'logo.JPG' ada di folder assets.")
 
 if os.path.exists(profile_path):
     profile = Image.open(profile_path)
 else:
     profile = None
-    st.error(f"Tidak menemukan file: {profile_path}")
+    st.error("Gambar profile tidak ditemukan! Pastikan 'profile.JPG' ada di folder assets.")
 
 # Sidebar Navigation
 st.sidebar.header("Pilih Menu")
@@ -103,6 +104,15 @@ elif page == "VibSim":
     x0 = st.sidebar.number_input("Posisi Awal (X Awal)", value=0.1, step=0.01)
     v0 = st.sidebar.number_input("Kecepatan Awal (v)", value=0.1, step=0.01) 
     t_end = st.sidebar.slider("Durasi Simulasi (s)", min_value=1, max_value=20, value=10)
+
+    # Keterangan Parameter di sidebar
+    st.sidebar.markdown("### Keterangan Parameter")
+    st.sidebar.markdown("- **Massa (m)**: Besar massa benda dalam kg")
+    st.sidebar.markdown("- **Konstanta Pegas (k)**: Kekakuan pegas dalam N/m")
+    st.sidebar.markdown("- **Konstanta Redaman (C)**: Koefisien redaman dalam Ns/m")
+    st.sidebar.markdown("- **Posisi Awal (X Awal)**: Posisi awal benda dalam meter")
+    st.sidebar.markdown("- **Kecepatan Awal (v)**: Kecepatan awal benda dalam m/s")
+    st.sidebar.markdown("- **Durasi Simulasi**: Waktu total simulasi dalam detik")
 
     # Tombol simulasi
     if st.sidebar.button("Simulate"):
