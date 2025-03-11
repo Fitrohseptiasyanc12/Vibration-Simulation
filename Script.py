@@ -8,27 +8,39 @@ import os
 
 # Path untuk logo dan profile
 script_dir = os.path.dirname(os.path.abspath(__file__))
-logo_path = os.path.join(script_dir, "logo.JPG")
-profile_path = os.path.join(script_dir, "profile.JPG")
+assets_dir = os.path.join(script_dir, "assets")
+logo_path = os.path.join(assets_dir, "logo.JPG")
+profile_path = os.path.join(assets_dir, "profile.JPG")
 
-# Load gambar logo dan profile
-logo = Image.open(logo_path)
-profile = Image.open(profile_path)
+# Load gambar logo dan profile jika ada
+if os.path.exists(logo_path):
+    logo = Image.open(logo_path)
+else:
+    logo = None
+    st.error(f"Tidak menemukan file: {logo_path}")
+
+if os.path.exists(profile_path):
+    profile = Image.open(profile_path)
+else:
+    profile = None
+    st.error(f"Tidak menemukan file: {profile_path}")
 
 # Sidebar Navigation
 st.sidebar.header("Pilih Menu")
 page = st.sidebar.radio("Navigation", ["Home", "My Profile", "VibSim"])
 
 if page == "Home":
-    st.image(logo, width=200)
-    st.write("President University", font_size=12)
+    if logo:
+        st.image(logo, width=200)
+    st.write("President University")
     st.title("WELCOME TO VIBSIM")
     st.subheader("Mechanical Vibration")
     st.write("Vibration Simulation (VibSim) dirancang untuk membantu anda dalam mensimulasikan sistem pegas-massa-redaman secara interaktif")
     st.write("Silahkan pilih menu di kiri atas untuk memulai.")
 
 elif page == "My Profile":
-    st.image(profile, width=200)
+    if profile:
+        st.image(profile, width=200)
     st.header("My Profile")
     st.write("Nama: Fitroh Septiasya Nour Cahya")
     st.write("Email: fitroh.cahya@student.president.ac.id")
@@ -91,15 +103,6 @@ elif page == "VibSim":
     x0 = st.sidebar.number_input("Posisi Awal (X Awal)", value=0.1, step=0.01)
     v0 = st.sidebar.number_input("Kecepatan Awal (v)", value=0.1, step=0.01) 
     t_end = st.sidebar.slider("Durasi Simulasi (s)", min_value=1, max_value=20, value=10)
-
-    # Keterangan Parameter di sidebar
-    st.sidebar.markdown("### Keterangan Parameter")
-    st.sidebar.markdown("- **Massa (m)**: Besar massa benda dalam kg")
-    st.sidebar.markdown("- **Konstanta Pegas (k)**: Kekakuan pegas dalam N/m")
-    st.sidebar.markdown("- **Konstanta Redaman (C)**: Koefisien redaman dalam Ns/m")
-    st.sidebar.markdown("- **Posisi Awal (X Awal)**: Posisi awal benda dalam meter")
-    st.sidebar.markdown("- **Kecepatan Awal (v)**: Kecepatan awal benda dalam m/s")
-    st.sidebar.markdown("- **Durasi Simulasi**: Waktu total simulasi dalam detik")
 
     # Tombol simulasi
     if st.sidebar.button("Simulate"):
