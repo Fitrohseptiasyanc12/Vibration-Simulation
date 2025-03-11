@@ -7,24 +7,21 @@ from PIL import Image
 import os
 
 # Path untuk logo dan profile
-script_dir = os.path.dirname(os.path.abspath(__file__))
-logo_path = os.path.join(script_dir, "assets", "logo.JPG")
-profile_path = os.path.join(script_dir, "assets", "profile.JPG")
+logo_path = os.path.join("assets", "logo.JPG")
+profile_path = os.path.join("assets", "profile.JPG")
 
 # Load gambar logo dan profile jika tersedia
 if os.path.exists(logo_path):
     logo = Image.open(logo_path)
 else:
     logo = None
+    st.warning("Logo tidak ditemukan!")
 
 if os.path.exists(profile_path):
     profile = Image.open(profile_path)
 else:
     profile = None
-
-# Debugging untuk memastikan gambar ditemukan
-st.write("Logo ditemukan:", os.path.exists(logo_path))
-st.write("Profile ditemukan:", os.path.exists(profile_path))
+    st.warning("Profile tidak ditemukan!")
 
 # Sidebar Navigation
 st.sidebar.header("Pilih Menu")
