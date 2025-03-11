@@ -8,8 +8,8 @@ import os
 
 # Path untuk logo dan profile
 script_dir = os.path.dirname(os.path.abspath(__file__))
-logo_path = os.path.join(script_dir, "logo.JPG")
-profile_path = os.path.join(script_dir, "profile.JPG")
+logo_path = os.path.join(script_dir, "assets", "logo.JPG")
+profile_path = os.path.join(script_dir, "assets", "profile.JPG")
 
 # Load gambar logo dan profile jika tersedia
 if os.path.exists(logo_path):
