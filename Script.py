@@ -22,6 +22,10 @@ if os.path.exists(profile_path):
 else:
     profile = None
 
+# Debugging untuk memastikan gambar ditemukan
+st.write("Logo ditemukan:", os.path.exists(logo_path))
+st.write("Profile ditemukan:", os.path.exists(profile_path))
+
 # Sidebar Navigation
 st.sidebar.header("Pilih Menu")
 page = st.sidebar.radio("Navigation", ["Home", "My Profile", "VibSim"])
